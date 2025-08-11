@@ -1,8 +1,9 @@
 ﻿using System;
+using SWAD_ViewOrderHistory_SubmitFeedback.Controllers;
+using SWAD_ViewOrderHistory_SubmitFeedback.Models;
 using SWAD_ViewOrderHistory_SubmitFeedback.Repositories;
 using SWAD_ViewOrderHistory_SubmitFeedback.Services;
 using SWAD_ViewOrderHistory_SubmitFeedback.UI;
-using SWAD_ViewOrderHistory_SubmitFeedback.Controllers;
 
 namespace SWAD_ViewOrderHistory_SubmitFeedback;
 
@@ -59,3 +60,20 @@ class Program
         Console.WriteLine("\nThank you for using the system. Goodbye!");
     }
 }
+
+//class Program
+//{
+//    static void Main(string[] args)
+//    {
+//        // Setup services
+//        var orderService = new OrderService(new OrderRepository(), new FoodStallRepository());
+//        var feedbackService = new FeedbackService(new FeedbackRepository(), orderService);
+
+//        // Setup UI
+//        var viewOrderHistoryUI = new ViewOrderHistoryUI(orderService, feedbackService);
+
+//        // Simulate an empty order history
+//        var emptyOrders = new List<Order>();
+//        viewOrderHistoryUI.DisplayOrderHistory(emptyOrders);
+//    }
+//}

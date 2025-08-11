@@ -24,7 +24,6 @@ public class ViewOrderHistoryUI
 
     public void DisplayNoOrderHistory()
     {
-        DisplayHeader("Order History");
         Console.WriteLine("No past orders found.");
         Console.WriteLine("\nPress any key to exit...");
         Console.ReadKey(true);
