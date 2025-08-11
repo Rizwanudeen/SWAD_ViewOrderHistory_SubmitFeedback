@@ -17,16 +17,9 @@ public class ViewOrderHistoryUI
         _feedbackService = feedbackService;
     }
 
-    private void ClearScreen()
-    {
-        try { Console.Clear(); }
-        catch { Console.Write("\x1b[2J\x1b[H"); }
-    }
-
     private void DisplayHeader(string title)
     {
-        ClearScreen();
-        Console.WriteLine($"=== {title} ===\n");
+        Console.WriteLine($"\n=== {title} ===\n");
     }
 
     public void DisplayNoOrderHistory()
@@ -136,8 +129,7 @@ public class ViewOrderHistoryUI
             if (text == "0") return null;
             if (text.Length >= MinFeedbackLength) return text;
 
-            Console.WriteLine($"\nToo short ({text.Length}/{MinFeedbackLength}). Press any key to try again...");
-            Console.ReadKey(true);
+            Console.WriteLine($"\nToo short ({text.Length}/{MinFeedbackLength}). Try again...");
         }
     }
 
@@ -149,8 +141,6 @@ public class ViewOrderHistoryUI
         Console.WriteLine($"Content: {feedback.Content}");
         Console.WriteLine("\nYour feedback has been stored and will be reviewed by the stall staff.");
         Console.WriteLine("Thank you for helping us improve our service!");
-        Console.WriteLine("\nPress any key to return to order history...");
-        Console.ReadKey(true);
     }
 
     private void DisplayExistingFeedback(Feedback feedback)
@@ -171,7 +161,5 @@ public class ViewOrderHistoryUI
     {
         DisplayHeader("Error");
         Console.WriteLine(message);
-        Console.WriteLine("\nPress any key to try again...");
-        Console.ReadKey(true);
     }
 }
