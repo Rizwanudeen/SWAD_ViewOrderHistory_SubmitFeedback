@@ -141,6 +141,8 @@ public class ViewOrderHistoryUI
         Console.WriteLine($"Content: {feedback.Content}");
         Console.WriteLine("\nYour feedback has been stored and will be reviewed by the stall staff.");
         Console.WriteLine("Thank you for helping us improve our service!");
+        Console.WriteLine("\nPress Enter to return to order history...");
+        Console.ReadLine();
     }
 
     private void DisplayExistingFeedback(Feedback feedback)
