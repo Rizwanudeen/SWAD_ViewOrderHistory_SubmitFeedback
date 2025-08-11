@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using SWAD_ViewOrderHistory_SubmitFeedback.Models;
 using SWAD_ViewOrderHistory_SubmitFeedback.Services;
 
@@ -21,12 +23,18 @@ public class ViewOrderHistoryUI
         catch { Console.Write("\x1b[2J\x1b[H"); }
     }
 
+    private void DisplayHeader(string title)
+    {
+        ClearScreen();
+        Console.WriteLine($"=== {title} ===\n");
+    }
+
     public void DisplayNoOrderHistory()
     {
+        DisplayHeader("Order History");
         Console.WriteLine("No past orders found.");
         Console.WriteLine("\nPress any key to exit...");
         Console.ReadKey(true);
-        while (Console.KeyAvailable) Console.ReadKey(true);
     }
 
     private void DisplayOrder(Order order, int index)
@@ -37,20 +45,17 @@ public class ViewOrderHistoryUI
         Console.WriteLine($"   Status: {order.Status}");
         Console.WriteLine($"   Date: {order.OrderDate:g}");
         Console.WriteLine($"   Pickup Time: {order.PickupTime:g}");
-        if (order.Feedback != null)
-            Console.WriteLine($"   Feedback: Submitted on {order.Feedback.Timestamp:g}");
-        else if (_orderService.IsOrderEligibleForFeedback(order))
-            Console.WriteLine("   Feedback: Eligible for feedback");
-        else
-            Console.WriteLine("   Feedback: Not eligible yet");
+        Console.WriteLine(order.Feedback != null
+            ? $"   Feedback: Submitted on {order.Feedback.Timestamp:g}"
+            : _orderService.IsOrderEligibleForFeedback(order)
+                ? "   Feedback: Eligible for feedback"
+                : "   Feedback: Not eligible yet");
         Console.WriteLine();
     }
 
-    // Robust: keeps asking until user enters a number between 0..orders.Count
     public int DisplayOrderHistory(List<Order> orders)
     {
-        ClearScreen();
-        Console.WriteLine("=== Order History ===\n");
+        DisplayHeader("Order History");
         if (orders.Count == 0)
         {
             DisplayNoOrderHistory();
@@ -77,8 +82,7 @@ public class ViewOrderHistoryUI
 
     public void DisplayOrderDetails(Order order)
     {
-        ClearScreen();
-        Console.WriteLine($"=== Order Details: {order.OrderId} ===\n");
+        DisplayHeader($"Order Details: {order.OrderId}");
         var stall = _orderService.GetFoodStall(order.StallId);
         Console.WriteLine($"Stall: {stall?.StallName}");
         Console.WriteLine($"Items: {string.Join(", ", order.Items)}");
@@ -87,7 +91,6 @@ public class ViewOrderHistoryUI
         Console.WriteLine($"Pickup Time: {order.PickupTime:g}");
     }
 
-    // Returns true if user wants to submit feedback; false to go back
     public bool DisplayActions(Order order)
     {
         if (_orderService.IsOrderEligibleForFeedback(order))
@@ -107,7 +110,6 @@ public class ViewOrderHistoryUI
             DisplayExistingFeedback(order.Feedback);
             Console.WriteLine("\nPress any key to return to order history...");
             Console.ReadKey(true);
-            while (Console.KeyAvailable) Console.ReadKey(true);
             return false;
         }
         else
@@ -116,18 +118,15 @@ public class ViewOrderHistoryUI
             Console.WriteLine("Only completed orders are eligible for feedback.");
             Console.WriteLine("\nPress any key to return to order history...");
             Console.ReadKey(true);
-            while (Console.KeyAvailable) Console.ReadKey(true);
             return false;
         }
     }
 
-    // Loops until feedback is long enough, or user cancels with a single 0
     public string? PromptFeedback()
     {
         while (true)
         {
-            ClearScreen();
-            Console.WriteLine("=== Submit Feedback ===\n");
+            DisplayHeader("Submit Feedback");
             Console.WriteLine($"Please enter your feedback (minimum {MinFeedbackLength} characters).");
             Console.WriteLine("Enter a single 0 to cancel.\n");
             Console.Write("> ");
@@ -139,14 +138,12 @@ public class ViewOrderHistoryUI
 
             Console.WriteLine($"\nToo short ({text.Length}/{MinFeedbackLength}). Press any key to try again...");
             Console.ReadKey(true);
-            while (Console.KeyAvailable) Console.ReadKey(true);
         }
     }
 
     public void DisplayFeedbackSubmissionSuccess(Feedback feedback)
     {
-        ClearScreen();
-        Console.WriteLine("=== Feedback Submitted Successfully! ===");
+        DisplayHeader("Feedback Submitted Successfully!");
         Console.WriteLine($"Feedback ID: {feedback.FeedbackId}");
         Console.WriteLine($"Timestamp: {feedback.Timestamp:g}");
         Console.WriteLine($"Content: {feedback.Content}");
@@ -154,7 +151,6 @@ public class ViewOrderHistoryUI
         Console.WriteLine("Thank you for helping us improve our service!");
         Console.WriteLine("\nPress any key to return to order history...");
         Console.ReadKey(true);
-        while (Console.KeyAvailable) Console.ReadKey(true);
     }
 
     private void DisplayExistingFeedback(Feedback feedback)
@@ -173,11 +169,9 @@ public class ViewOrderHistoryUI
 
     public void DisplayValidationError(string message)
     {
-        ClearScreen();
-        Console.WriteLine("=== Error ===");
+        DisplayHeader("Error");
         Console.WriteLine(message);
         Console.WriteLine("\nPress any key to try again...");
         Console.ReadKey(true);
-        while (Console.KeyAvailable) Console.ReadKey(true);
     }
 }
