@@ -4,12 +4,15 @@ public class FoodStall
 {
     public string StallId { get; set; }
     public string StallName { get; set; }
-    public List<Order> Orders { get; set; } = new();
-    public List<Feedback> Feedbacks { get; set; } = new();
+    public List<string> Permissions { get; set; } = new();
+    public string OperationHours { get; set; }
+    public int AveragePrepTime { get; set; }
 
-    public FoodStall(string stallId, string stallName)
+    public FoodStall(string stallId, string stallName, string operationHours, int averagePrepTime)
     {
         StallId = stallId;
         StallName = stallName;
+        OperationHours = operationHours;
+        AveragePrepTime = averagePrepTime;
     }
 }

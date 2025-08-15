@@ -8,27 +8,15 @@ public class FeedbackService
     private readonly FeedbackRepository _feedbackRepository;
     private readonly OrderService _orderService;
 
-    public event Action<Feedback>? FeedbackSubmitted;
-
     public FeedbackService(FeedbackRepository feedbackRepository, OrderService orderService)
     {
         _feedbackRepository = feedbackRepository;
         _orderService = orderService;
     }
 
-    public bool HasExistingFeedback(string orderId)
-    {
-        return _feedbackRepository.ExistsForOrder(orderId);
-    }
-
-    public bool ValidateFeedback(string feedback)
-    {
-        return !string.IsNullOrWhiteSpace(feedback) && feedback.Length >= 10;
-    }
-
     public (bool success, string message, Feedback? feedback) SubmitFeedback(string orderId, string studentId, string content)
     {
-        var order = _orderService.GetOrderDetails(orderId);
+        var order = _orderService.GetOrderById(orderId);
         if (order == null)
         {
             return (false, "Order not found.", null);
@@ -39,30 +27,23 @@ public class FeedbackService
             return (false, "Order is not eligible for feedback.", null);
         }
 
-        if (HasExistingFeedback(orderId))
+        if (order.Feedback != null)
         {
             return (false, "Feedback already exists for this order.", null);
         }
 
-        if (!ValidateFeedback(content))
+        if (string.IsNullOrWhiteSpace(content) || content.Length < 10)
         {
-            return (false, "Feedback must be at least 10 characters long.", null);
+            return (false, "Invalid feedback. Feedback must not be empty and must be at least 10 characters.", null);
         }
 
-        var feedback = new Feedback(
-            $"F{Guid.NewGuid().ToString("N").Substring(0, 8)}",
-            content,
-            orderId,
-            studentId,
-            order.StallId
-        );
-
+        var feedback = new Feedback(Guid.NewGuid().ToString(), content);
         _feedbackRepository.Add(feedback);
+
+        // Associate feedback with the order
         order.Feedback = feedback;
         _orderService.UpdateOrder(order);
 
-        FeedbackSubmitted?.Invoke(feedback);
-
-        return (true, "Thank you for your feedback!", feedback);
+        return (true, "Feedback submitted successfully.", feedback);
     }
 }

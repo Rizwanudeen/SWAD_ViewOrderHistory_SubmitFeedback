@@ -16,36 +16,25 @@ public class ViewOrderHistoryController
         // Initialize with sample data
         _foodStalls = new List<FoodStall>
         {
-            new FoodStall("S1", "Western Food Stall"),
-            new FoodStall("S2", "Asian Delights")
+            new FoodStall("S1", "Western Food Stall", "8am-8pm", 15),
+            new FoodStall("S2", "Asian Delights", "9am-9pm", 10)
         };
 
         _students = new List<Student>
         {
-            new Student("U1", "John Doe", "ST1")
+            new Student("U1", "John Doe", "password123", 0, false, "Regular", null)
         };
 
         _orders = new List<Order>
         {
-            new Order("O1", "ST1", "S1", new List<string> { "Chicken Chop", "Fries" }, DateTime.Now.AddHours(1)) 
-            { 
-                Status = OrderStatus.Collected,
-                OrderDate = DateTime.Now.AddDays(-1)
-            },
-            new Order("O2", "ST1", "S2", new List<string> { "Fried Rice", "Spring Rolls" }, DateTime.Now.AddHours(2))
-            {
-                Status = OrderStatus.Pending,
-                OrderDate = DateTime.Now
-            }
+            new Order("O1", DateTime.Now.AddDays(-1), "Collected", DateTime.Now.AddHours(1), "QR1", false),
+            new Order("O2", DateTime.Now, "Pending", DateTime.Now.AddHours(2), "QR2", false)
         };
     }
 
     public List<Order> GetOrderHistory(string studentId)
     {
-        return _orders
-            .Where(o => o.StudentId == studentId)
-            .OrderByDescending(o => o.OrderDate)
-            .ToList();
+        return _orders.OrderByDescending(o => o.OrderDateTime).ToList();
     }
 
     public Order? GetOrderDetails(string orderId)
@@ -60,6 +49,6 @@ public class ViewOrderHistoryController
 
     public bool IsOrderEligibleForFeedback(Order order)
     {
-        return order.Status == OrderStatus.Collected && order.Feedback == null;
+        return order.Status == "Collected";
     }
 }

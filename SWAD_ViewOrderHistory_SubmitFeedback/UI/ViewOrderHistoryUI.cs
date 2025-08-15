@@ -31,18 +31,11 @@ public class ViewOrderHistoryUI
 
     private void DisplayOrder(Order order, int index)
     {
-        var stall = _orderService.GetFoodStall(order.StallId);
-        Console.WriteLine($"{index}. Order {order.OrderId} - {stall?.StallName}");
-        Console.WriteLine($"   Items: {string.Join(", ", order.Items)}");
+        Console.WriteLine($"{index}. Order {order.OrderId}");
         Console.WriteLine($"   Status: {order.Status}");
-        Console.WriteLine($"   Date: {order.OrderDate:g}");
+        Console.WriteLine($"   Date: {order.OrderDateTime:g}");
         Console.WriteLine($"   Pickup Time: {order.PickupTime:g}");
-        Console.WriteLine(order.Feedback != null
-            ? $"   Feedback: Submitted on {order.Feedback.Timestamp:g}"
-            : _orderService.IsOrderEligibleForFeedback(order)
-                ? "   Feedback: Eligible for feedback"
-                : "   Feedback: Not eligible yet");
-        Console.WriteLine();
+        Console.WriteLine($"   QR Code: {order.QrCode}");
     }
 
     public int DisplayOrderHistory(List<Order> orders)
@@ -75,16 +68,25 @@ public class ViewOrderHistoryUI
     public void DisplayOrderDetails(Order order)
     {
         DisplayHeader($"Order Details: {order.OrderId}");
-        var stall = _orderService.GetFoodStall(order.StallId);
-        Console.WriteLine($"Stall: {stall?.StallName}");
-        Console.WriteLine($"Items: {string.Join(", ", order.Items)}");
         Console.WriteLine($"Status: {order.Status}");
-        Console.WriteLine($"Order Date: {order.OrderDate:g}");
+        Console.WriteLine($"Order Date: {order.OrderDateTime:g}");
         Console.WriteLine($"Pickup Time: {order.PickupTime:g}");
+        Console.WriteLine($"QR Code: {order.QrCode}");
     }
 
     public bool DisplayActions(Order order)
     {
+        if (order.Feedback != null)
+        {
+            Console.WriteLine("\n=== Submitted Feedback ===");
+            Console.WriteLine($"Submitted on: {order.Feedback.Timestamp:g}");
+            Console.WriteLine("Your feedback:");
+            Console.WriteLine(order.Feedback.Content);
+            Console.WriteLine("\nPress any key to return to order history...");
+            Console.ReadKey(true);
+            return false;
+        }
+
         if (_orderService.IsOrderEligibleForFeedback(order))
         {
             Console.WriteLine("\nThis order is eligible for feedback!");
@@ -96,13 +98,6 @@ public class ViewOrderHistoryUI
                 if (ans == "N") return false;
                 Console.WriteLine("Please type Y or N.");
             }
-        }
-        else if (order.Feedback != null)
-        {
-            DisplayExistingFeedback(order.Feedback);
-            Console.WriteLine("\nPress any key to return to order history...");
-            Console.ReadKey(true);
-            return false;
         }
         else
         {
@@ -142,20 +137,6 @@ public class ViewOrderHistoryUI
         Console.WriteLine("Thank you for helping us improve our service!");
         Console.WriteLine("\nPress Enter to return to order history...");
         Console.ReadLine();
-    }
-
-    private void DisplayExistingFeedback(Feedback feedback)
-    {
-        Console.WriteLine("\n=== Submitted Feedback ===");
-        Console.WriteLine($"Submitted on: {feedback.Timestamp:g}");
-        Console.WriteLine("Your feedback:");
-        Console.WriteLine(feedback.Content);
-        if (feedback.Response != null)
-        {
-            Console.WriteLine("\nStall Response:");
-            Console.WriteLine($"Responded on: {feedback.Response.Timestamp:g}");
-            Console.WriteLine(feedback.Response.Content);
-        }
     }
 
     public void DisplayValidationError(string message)

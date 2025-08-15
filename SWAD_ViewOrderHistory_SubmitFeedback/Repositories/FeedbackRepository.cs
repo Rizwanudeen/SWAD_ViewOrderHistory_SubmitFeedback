@@ -21,5 +21,5 @@ public class FeedbackRepository : IRepository<Feedback>
         }
     }
 
-    public bool ExistsForOrder(string orderId) => _feedbacks.Any(f => f.OrderId == orderId);
+    public bool ExistsForFeedbackId(string feedbackId) => _feedbacks.Any(f => f.FeedbackId == feedbackId);
 }

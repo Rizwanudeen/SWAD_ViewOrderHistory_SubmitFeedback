@@ -3,29 +3,20 @@ namespace SWAD_ViewOrderHistory_SubmitFeedback.Models;
 public class Order
 {
     public string OrderId { get; set; }
-    public string StudentId { get; set; }
-    public string StallId { get; set; }
-    public List<string> Items { get; set; }
+    public DateTime OrderDateTime { get; set; }
+    public string Status { get; set; }
     public DateTime PickupTime { get; set; }
-    public DateTime OrderDate { get; set; }
-    public OrderStatus Status { get; set; }
+    public string QrCode { get; set; }
     public Feedback? Feedback { get; set; }
+    public bool isBeingPrepared { get; set; }
 
-    public Order(string orderId, string studentId, string stallId, List<string> items, DateTime pickupTime)
+    public Order(string orderId, DateTime orderDateTime, string status, DateTime pickupTime, string qrCode, bool isBeingPrepared)
     {
         OrderId = orderId;
-        StudentId = studentId;
-        StallId = stallId;
-        Items = items;
+        OrderDateTime = orderDateTime;
+        Status = status;
         PickupTime = pickupTime;
-        OrderDate = DateTime.Now;
-        Status = OrderStatus.Pending;
+        QrCode = qrCode;
+        this.isBeingPrepared = isBeingPrepared;
     }
-}
-
-public enum OrderStatus
-{
-    Pending,
-    Collected,
-    Cancelled
 }

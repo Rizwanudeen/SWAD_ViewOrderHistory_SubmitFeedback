@@ -16,10 +16,10 @@ public class OrderService
 
     public List<Order> GetOrderHistory(string studentId)
     {
-        return _orderRepository.GetByStudentId(studentId);
+        return _orderRepository.GetAll();
     }
 
-    public Order? GetOrderDetails(string orderId)
+    public Order? GetOrderById(string orderId)
     {
         return _orderRepository.GetById(orderId);
     }
@@ -31,7 +31,7 @@ public class OrderService
 
     public bool IsOrderEligibleForFeedback(Order order)
     {
-        return order.Status == OrderStatus.Collected && order.Feedback == null;
+        return order.Status == "Collected";
     }
 
     public void UpdateOrder(Order order)

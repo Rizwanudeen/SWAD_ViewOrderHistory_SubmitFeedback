@@ -10,8 +10,8 @@ public class FoodStallRepository : IRepository<FoodStall>
     {
         _foodStalls = new List<FoodStall>
         {
-            new FoodStall("S1", "Western Food Stall"),
-            new FoodStall("S2", "Asian Delights")
+            new FoodStall("S1", "Western Food Stall", "8am-8pm", 15),
+            new FoodStall("S2", "Asian Delights", "9am-9pm", 10)
         };
     }
 

@@ -17,7 +17,8 @@ public class SubmitFeedbackController
 
     public bool HasExistingFeedback(string orderId)
     {
-        return _feedbacks.Any(f => f.OrderId == orderId);
+        var order = _orderHistoryController.GetOrderDetails(orderId);
+        return order?.Feedback != null;
     }
 
     public bool ValidateFeedback(string feedback)
@@ -35,6 +36,12 @@ public class SubmitFeedbackController
 
         if (HasExistingFeedback(orderId))
         {
+            Console.WriteLine("\n=== Submitted Feedback ===");
+            Console.WriteLine($"Submitted on: {order.Feedback?.Timestamp:g}");
+            Console.WriteLine("Your feedback:");
+            Console.WriteLine(order.Feedback?.Content);
+            Console.WriteLine("\nPress any key to return to order history...");
+            Console.ReadKey(true);
             return null;
         }
 
@@ -44,11 +51,8 @@ public class SubmitFeedbackController
         }
 
         var feedback = new Feedback(
-            $"F{_feedbacks.Count + 1}",
-            content,
-            orderId,
-            studentId,
-            order.StallId
+            Guid.NewGuid().ToString(),
+            content
         );
 
         _feedbacks.Add(feedback);
